@@ -1,4 +1,10 @@
 <Solution>
+  <Folder Name="/docs/">
+    <File Path="ARCHITECTURE.md" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+  </Folder>
   <Folder Name="/src/">
     <Project Path="UserManagement.API/UserManagement.API.csproj" />
     <Project Path="UserManagement.Application/UserManagement.Application.csproj" />
