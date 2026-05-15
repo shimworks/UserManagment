@@ -1,0 +1,3 @@
+  - Regra: nunca usar `static` em classes de domínio
+  - Regra: todos os construtores de entidades são `private` ou `internal`; uso de factory methods ou construtores ricos
+  - Regra: DTOs nunca devem conter lógica de negócio
