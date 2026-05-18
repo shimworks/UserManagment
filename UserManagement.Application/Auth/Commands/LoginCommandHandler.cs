@@ -2,6 +2,8 @@
 using UserManagement.Application.Common.DTOs;
 using UserManagement.Domain.Exceptions;
 using UserManagement.Domain.Interfaces;
+using UserManagement.Application.Common.Interfaces;
+
 
 namespace UserManagement.Application.Auth.Commands;
 

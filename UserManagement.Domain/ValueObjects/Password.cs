@@ -1,4 +1,5 @@
 ﻿namespace UserManagement.Domain.ValueObjects;
+using UserManagement.Domain.Exceptions;
 
 public sealed class Password
 {

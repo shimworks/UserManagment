@@ -5,6 +5,7 @@ using UserManagement.Domain.Entities;
 using UserManagement.Domain.Exceptions;
 using UserManagement.Domain.Interfaces;
 using UserManagement.Domain.ValueObjects;
+using UserManagement.Application.Common.Interfaces;
 
 namespace UserManagement.Application.Users.Commands;
 
