@@ -1,6 +1,9 @@
 using MediatR;
+using Microsoft.EntityFrameworkCore;
+using UserManagement.Application.Common.Interfaces;
 using UserManagement.Application.DependencyInjection;
 using UserManagement.Infrastructure.DependencyInjection;
+using UserManagement.Infrastructure.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,10 +11,22 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddControllers();
 
 var app = builder.Build();
+
+app.MapControllers();
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    var hasher = scope.ServiceProvider.GetRequiredService<IPasswordHasher>();
+
+    await context.Database.MigrateAsync(); // aplica migrations pendentes automaticamente
+    await DatabaseSeeder.SeedAsync(context, hasher);
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

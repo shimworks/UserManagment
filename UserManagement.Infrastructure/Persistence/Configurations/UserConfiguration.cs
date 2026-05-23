@@ -15,12 +15,21 @@ public sealed class UserConfiguration : IEntityTypeConfiguration<User>
             .IsRequired()
             .HasMaxLength(100);
 
+        // OwnsOne mapeia o Value Object Email como colunas na mesma tabela.
+        // O indice unico e definido DENTRO do OwnsOne — tentar defini-lo
+        // fora via builder.HasIndex(u => u.Email) causa o erro
+        // "property or navigation already exists" pois o EF trata
+        // owned types de forma diferente de propriedades escalares.
         builder.OwnsOne(u => u.Email, email =>
         {
             email.Property(e => e.Value)
                 .HasColumnName("Email")
                 .IsRequired()
                 .HasMaxLength(255);
+
+            email.HasIndex(e => e.Value)
+                .IsUnique()
+                .HasDatabaseName("IX_Users_Email");
         });
 
         builder.OwnsOne(u => u.Password, pwd =>
@@ -37,7 +46,5 @@ public sealed class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(u => u.IsActive).IsRequired();
         builder.Property(u => u.CreatedAt).IsRequired();
         builder.Property(u => u.UpdatedAt).IsRequired();
-
-        builder.HasIndex(u => u.Email).IsUnique();
     }
 }
