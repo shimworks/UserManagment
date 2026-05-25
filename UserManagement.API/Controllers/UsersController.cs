@@ -10,7 +10,7 @@ using UserManagement.Application.Users.Queries;
 [Authorize]
 public sealed class UsersController : ControllerBase
 {
-    private readonly IMediator _mediator;
+    private readonly IMediator _mediator;   
     public UsersController(IMediator mediator) => _mediator = mediator;
 
     [HttpPost]
