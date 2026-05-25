@@ -26,7 +26,7 @@ public static class AuthenticationExtensions
                     ValidIssuer = jwtSettings.Issuer,
                     ValidAudience = jwtSettings.Audience,
                     IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ClockSkew = TimeSpan.Zero, // sem tolerância de clock
+                    ClockSkew = TimeSpan.Zero,
                 };
             });
 
