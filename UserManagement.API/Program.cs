@@ -1,5 +1,6 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using UserManagement.API.Extensions;
 using UserManagement.Application.Common.Interfaces;
 using UserManagement.Application.DependencyInjection;
 using UserManagement.Infrastructure.DependencyInjection;
@@ -14,9 +15,13 @@ builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBeh
 
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddJwtAuthentication(builder.Configuration);
 builder.Services.AddControllers();
 
+
 var app = builder.Build();
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 using (var scope = app.Services.CreateScope())
