@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using UserManagement.API.Extensions;
+using UserManagement.API.Middlewares;
 using UserManagement.Application.Common.Interfaces;
 using UserManagement.Application.DependencyInjection;
 using UserManagement.Infrastructure.DependencyInjection;
@@ -20,6 +21,7 @@ builder.Services.AddControllers();
 
 
 var app = builder.Build();
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
 
