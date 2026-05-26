@@ -8,16 +8,18 @@ using UserManagement.Application.DependencyInjection;
 using UserManagement.Infrastructure.DependencyInjection;
 using UserManagement.Infrastructure.Persistence;
 
-var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddJwtAuthentication(builder.Configuration);
 builder.Services.AddControllers();
+builder.Services.AddSwaggerWithAuth();
+
+builder.Services.AddHealthChecks()
+    .AddDbContextCheck<AppDbContext>("database");
 
 builder.Host.UseSerilog((ctx, lc) =>
     lc.ReadFrom.Configuration(ctx.Configuration)
@@ -27,7 +29,6 @@ builder.Host.UseSerilog((ctx, lc) =>
           rollingInterval: RollingInterval.Day,
           retainedFileCountLimit: 7));
 
-builder.Services.AddSwaggerWithAuth();
 
 var app = builder.Build();
 app.UseMiddleware<ExceptionHandlingMiddleware>();
@@ -72,6 +73,8 @@ app.MapGet("/weatherforecast", () =>
     return forecast;
 })
 .WithName("GetWeatherForecast");
+
+  app.MapHealthChecks("/health");
 
 app.Run();
 
