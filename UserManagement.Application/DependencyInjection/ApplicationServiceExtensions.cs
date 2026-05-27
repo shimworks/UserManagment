@@ -4,6 +4,8 @@ using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using UserManagement.Application.Common.Mappings;
 using UserManagement.Application.Users.Commands;
+using UserManagement.Application.Users.Commands.Validators;
+using UserManagement.Application.Common.Behaviors;
 
 namespace UserManagement.Application.DependencyInjection;
 

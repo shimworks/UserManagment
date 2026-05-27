@@ -246,3 +246,8 @@ dotnet_naming_style.begins_with_i.required_prefix = I
 dotnet_naming_style.begins_with_i.required_suffix = 
 dotnet_naming_style.begins_with_i.word_separator = 
 dotnet_naming_style.begins_with_i.capitalization = pascal_case
+
+# Rules severity
+dotnet_analyzer_diagnostic.severity = warning
+dotnet_diagnostic.CA1062.severity = error  # validar argumentos não-nulos
+dotnet_diagnostic.CA2007.severity = none   # ConfigureAwait (desnecessário em web)

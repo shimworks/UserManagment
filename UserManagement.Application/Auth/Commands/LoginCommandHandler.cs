@@ -28,6 +28,8 @@ public sealed class LoginCommandHandler
         LoginCommand request,
         CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(request);
+
         // Mensagem generica: nunca indicar se foi o email ou a senha que falhou
         const string invalidCredentials = "Invalid credentials.";
 

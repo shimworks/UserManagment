@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using System.Net;
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using UserManagement.Domain.Exceptions;
 
@@ -9,6 +10,13 @@ public sealed class ExceptionHandlingMiddleware
     private readonly RequestDelegate _next;
     private readonly ILogger<ExceptionHandlingMiddleware> _logger;
 
+    // CA1848: LoggerMessage delegate — evita boxing de parâmetros e alocação desnecessária
+    private static readonly Action<ILogger, Exception> _logUnhandled =
+        LoggerMessage.Define(
+            LogLevel.Error,
+            new EventId(1, "UnhandledException"),
+            "Unhandled exception");
+
     public ExceptionHandlingMiddleware(RequestDelegate next, ILogger<ExceptionHandlingMiddleware> logger)
     {
         _next = next;
@@ -17,6 +25,7 @@ public sealed class ExceptionHandlingMiddleware
 
     public async Task InvokeAsync(HttpContext context)
     {
+        ArgumentNullException.ThrowIfNull(context);
         try { await _next(context); }
         catch (Exception ex) { await HandleAsync(context, ex); }
     }
@@ -33,7 +42,7 @@ public sealed class ExceptionHandlingMiddleware
             _ => (500, "Internal server error")
         };
 
-        if (status == 500) _logger.LogError(ex, "Unhandled exception");
+        if (status == 500) _logUnhandled(_logger, ex);
 
         var problem = new ProblemDetails
         {

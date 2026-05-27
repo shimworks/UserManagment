@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
 using MediatR;
+using UserManagement.Application.Common.Interfaces;
 using UserManagement.Application.Users.DTOs;
 using UserManagement.Domain.Entities;
 using UserManagement.Domain.Exceptions;
 using UserManagement.Domain.Interfaces;
 using UserManagement.Domain.ValueObjects;
-using UserManagement.Application.Common.Interfaces;
 
 namespace UserManagement.Application.Users.Commands;
 
@@ -33,6 +33,8 @@ public sealed class CreateUserCommandHandler
         CreateUserCommand request,
         CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(request);
+
         var exists = await _userRepository.ExistsByEmailAsync(request.Email, cancellationToken);
         if (exists)
             throw new ConflictException($"Email '{request.Email}' is already in use.");

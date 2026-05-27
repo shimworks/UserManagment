@@ -22,6 +22,8 @@ public sealed class ListUsersQueryHandler
         ListUsersQuery request,
         CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(request);
+
         // Executa contagem e listagem em paralelo para melhor performance
         var usersTask = _userRepository.ListAsync(request.Page, request.PageSize, cancellationToken);
         var countTask = _userRepository.CountAsync(cancellationToken);

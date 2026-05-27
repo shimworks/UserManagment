@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Text;
 using UserManagement.Domain.Entities;
 using UserManagement.Infrastructure.Settings;
+using UserManagement.Application.Common.Interfaces;
 
 
 namespace UserManagement.Infrastructure.Services;
@@ -14,10 +15,15 @@ public sealed class JwtTokenService : ITokenService
     private readonly JwtSettings _settings;
 
     public JwtTokenService(IOptions<JwtSettings> settings)
-        => _settings = settings.Value;
+    {
+        ArgumentNullException.ThrowIfNull(settings);
+        _settings = settings.Value;
+    }
 
     public string GenerateToken(User user)
     {
+        ArgumentNullException.ThrowIfNull(user);
+
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_settings.Secret));
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 

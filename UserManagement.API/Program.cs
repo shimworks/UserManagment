@@ -1,12 +1,15 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
+using System.Diagnostics.CodeAnalysis;
 using UserManagement.API.Extensions;
 using UserManagement.API.Middlewares;
 using UserManagement.Application.Common.Interfaces;
 using UserManagement.Application.DependencyInjection;
 using UserManagement.Infrastructure.DependencyInjection;
 using UserManagement.Infrastructure.Persistence;
+using UserManagement.Application.Common.Behaviors;
+using Weather;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -80,11 +83,17 @@ app.MapGet("/weatherforecast", () =>
 
   app.MapHealthChecks("/health");
 
-app.Run();
+await app.RunAsync();
 
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
+namespace Weather
 {
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+
+    record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
+    {
+        public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+    }
 }
 
+[SuppressMessage("Design", "CA1052:Static holder types should be static or not inheritable",
+    Justification = "Required by WebApplicationFactory<Program> in integration tests.")]
 public partial class Program { }

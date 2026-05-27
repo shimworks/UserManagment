@@ -1,6 +1,8 @@
 ﻿using FluentValidation;
 using MediatR;
 
+namespace UserManagement.Application.Common.Behaviors;
+
 public sealed class ValidationBehavior<TRequest, TResponse>
     : IPipelineBehavior<TRequest, TResponse>
     where TRequest : IRequest<TResponse>
@@ -15,15 +17,17 @@ public sealed class ValidationBehavior<TRequest, TResponse>
         RequestHandlerDelegate<TResponse> next,
         CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(next);
+
         var failures = _validators
             .Select(v => v.Validate(request))
             .SelectMany(r => r.Errors)
             .Where(e => e != null)
             .ToList();
 
-        if (failures.Any())
+        if (failures.Count > 0)
             throw new ValidationException(failures);
 
-        return await next();
+        return await next(cancellationToken);
     }
 }

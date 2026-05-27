@@ -5,6 +5,7 @@ using UserManagement.Application.Users.Commands;
 using UserManagement.Application.Users.DTOs;
 using UserManagement.Application.Users.Queries;
 
+namespace UserManagement.API.Controllers;
 [ApiController]
 [Route("api/users")]
 [Authorize]

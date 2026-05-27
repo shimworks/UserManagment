@@ -1,12 +1,11 @@
 ﻿using AutoMapper;
 using MediatR;
+using UserManagement.Application.Common.Interfaces;
 using UserManagement.Application.Users.DTOs;
 using UserManagement.Domain.Entities;
 using UserManagement.Domain.Exceptions;
 using UserManagement.Domain.Interfaces;
 using UserManagement.Domain.ValueObjects;
-using UserManagement.Application.Common.Interfaces;
-
 
 namespace UserManagement.Application.Users.Commands;
 
@@ -31,6 +30,8 @@ public sealed class UpdateUserCommandHandler
         UpdateUserCommand request,
         CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(request);
+
         var user = await _userRepository.GetByIdAsync(request.Id, cancellationToken);
 
         if (user is null)
