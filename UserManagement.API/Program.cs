@@ -47,7 +47,11 @@ using (var scope = app.Services.CreateScope())
     var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     var hasher = scope.ServiceProvider.GetRequiredService<IPasswordHasher>();
 
-    await context.Database.MigrateAsync(); // aplica migrations pendentes automaticamente
+    if (context.Database.IsRelational())
+        await context.Database.MigrateAsync(); // aplica migrations pendentes automaticamente
+    else
+        await context.Database.EnsureCreatedAsync();
+
     await DatabaseSeeder.SeedAsync(context, hasher);
 }
 
@@ -82,3 +86,5 @@ record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
 {
     public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
 }
+
+public partial class Program { }
