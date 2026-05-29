@@ -251,3 +251,10 @@ dotnet_naming_style.begins_with_i.capitalization = pascal_case
 dotnet_analyzer_diagnostic.severity = warning
 dotnet_diagnostic.CA1062.severity = error  # validar argumentos não-nulos
 dotnet_diagnostic.CA2007.severity = none   # ConfigureAwait (desnecessário em web)
+dotnet_diagnostic.CA1052.severity = none   # Program não pode ser static (WebApplicationFactory<Program>)
+dotnet_diagnostic.CA1305.severity = none   # Serilog não expõe IFormatProvider nas sobrecargas WriteTo
+dotnet_diagnostic.CA1862.severity = none   # ToLowerInvariant() é intencional — normalização de email antes de comparar no EF
+dotnet_diagnostic.CA1707.severity = none   # Underscores em nomes de teste são convenção xUnit (Given_When_Then)
+
+[**/Migrations/**.cs]
+dotnet_diagnostic.CA1062.severity = none

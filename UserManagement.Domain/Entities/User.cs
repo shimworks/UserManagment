@@ -15,7 +15,7 @@ public sealed class User : BaseEntity
     public UserRole Role { get; private set; }
     public bool IsActive { get; private set; }
 
-    private User() { } // Para o EF Core
+    private User() { Name = null!; Email = null!; Password = null!; } // Para o EF Core
 
     private User(string name, Email email, Password password, UserRole role)
     {

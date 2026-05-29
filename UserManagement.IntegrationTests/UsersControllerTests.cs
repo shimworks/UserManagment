@@ -2,7 +2,6 @@
 using System.Net;
 using System.Net.Http.Json;
 using UserManagement.Application.Users.DTOs;
-using UserManagement.Application.Users.Queries;
 using Xunit;
 
 namespace UserManagement.IntegrationTests;
@@ -13,7 +12,10 @@ public sealed class UsersControllerTests
     private readonly CustomWebApplicationFactory _factory;
 
     public UsersControllerTests(CustomWebApplicationFactory factory)
-        => _factory = factory;
+    {
+        ArgumentNullException.ThrowIfNull(factory);
+        _factory = factory;
+    }
 
     public Task InitializeAsync() => _factory.InitializeAsync();
     public Task DisposeAsync() => Task.CompletedTask;

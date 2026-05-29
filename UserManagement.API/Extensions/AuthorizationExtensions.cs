@@ -7,11 +7,9 @@ public static class AuthorizationExtensions
     public static IServiceCollection AddRoleAuthorization(
         this IServiceCollection services)
     {
-        services.AddAuthorization(opts =>
-        {
-            opts.AddPolicy("AdminOnly", policy =>
+        services.AddAuthorizationBuilder()
+            .AddPolicy("AdminOnly", policy =>
                 policy.RequireRole(UserRole.Administrator.ToString()));
-        });
 
         return services;
     }

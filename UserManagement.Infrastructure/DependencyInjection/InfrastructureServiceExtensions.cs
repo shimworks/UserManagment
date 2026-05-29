@@ -16,6 +16,8 @@ public static class InfrastructureServiceExtensions
         this IServiceCollection services,
         IConfiguration configuration)
     {
+        ArgumentNullException.ThrowIfNull(configuration);
+
         services.AddDbContext<AppDbContext>(opts =>
             opts.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 

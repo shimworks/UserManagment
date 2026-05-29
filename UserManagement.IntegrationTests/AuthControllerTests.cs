@@ -1,18 +1,28 @@
 ﻿using FluentAssertions;
 using System.Net;
 using System.Net.Http.Json;
-using UserManagement.Application.Auth.Commands;
 using UserManagement.Application.Common.DTOs;
 using Xunit;
 
 namespace UserManagement.IntegrationTests;
 
-public sealed class AuthControllerTests : IClassFixture<CustomWebApplicationFactory>
+public sealed class AuthControllerTests
+    : IClassFixture<CustomWebApplicationFactory>, IAsyncLifetime
 {
+    private readonly CustomWebApplicationFactory _factory;
     private readonly HttpClient _client;
 
     public AuthControllerTests(CustomWebApplicationFactory factory)
-        => _client = factory.CreateClient();
+    {
+        ArgumentNullException.ThrowIfNull(factory);
+        _factory = factory;
+        _client = factory.CreateClient();
+    }
+
+    // xUnit chama InitializeAsync antes de qualquer [Fact].
+    // Garante que o seed da factory terminou antes dos testes rodarem.
+    public Task InitializeAsync() => _factory.InitializeAsync();
+    public Task DisposeAsync() => Task.CompletedTask;
 
     [Fact]
     public async Task Login_WithValidCredentials_ShouldReturn200WithToken()

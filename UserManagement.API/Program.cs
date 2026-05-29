@@ -1,16 +1,13 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
-using System.Diagnostics.CodeAnalysis;
 using UserManagement.API.Extensions;
 using UserManagement.API.Middlewares;
+using UserManagement.Application.Common.Behaviors;
 using UserManagement.Application.Common.Interfaces;
 using UserManagement.Application.DependencyInjection;
 using UserManagement.Infrastructure.DependencyInjection;
 using UserManagement.Infrastructure.Persistence;
-using UserManagement.Application.Common.Behaviors;
-using Weather;
-
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
@@ -62,38 +59,6 @@ using (var scope = app.Services.CreateScope())
 
 app.UseHttpsRedirection();
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast = Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast");
-
-  app.MapHealthChecks("/health");
+app.MapHealthChecks("/health");
 
 await app.RunAsync();
-
-namespace Weather
-{
-
-    record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-    {
-        public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-    }
-}
-
-[SuppressMessage("Design", "CA1052:Static holder types should be static or not inheritable",
-    Justification = "Required by WebApplicationFactory<Program> in integration tests.")]
-public partial class Program { }

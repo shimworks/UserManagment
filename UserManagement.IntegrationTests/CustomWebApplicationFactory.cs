@@ -5,10 +5,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
-using System.Net.Http.Json;
 using System.Security.Claims;
 using System.Text;
-using UserManagement.Application.Auth.Commands;
 using UserManagement.Application.Common.Interfaces;
 using UserManagement.Infrastructure.Persistence;
 using UserManagement.Infrastructure.Settings;
@@ -28,6 +26,8 @@ public sealed class CustomWebApplicationFactory
 {
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
+        ArgumentNullException.ThrowIfNull(builder);
+
         builder.ConfigureServices(services =>
         {
             // Remove todos os descritores relacionados ao AppDbContext e ao provider SQL Server.
@@ -35,7 +35,7 @@ public sealed class CustomWebApplicationFactory
                 .Where(d =>
                     d.ServiceType == typeof(DbContextOptions<AppDbContext>) ||
                     d.ServiceType == typeof(AppDbContext) ||
-                    (d.ServiceType.FullName?.StartsWith("Microsoft.EntityFrameworkCore") ?? false))
+                    (d.ServiceType.FullName?.StartsWith("Microsoft.EntityFrameworkCore", StringComparison.Ordinal) ?? false))
                 .ToList();
 
             foreach (var d in descriptorsToRemove)
@@ -75,6 +75,8 @@ public sealed class CustomWebApplicationFactory
     // ignorando o parâmetro role e fazendo todos os testes de autorização passarem como 201.
     public HttpClient CreateAuthenticatedClient(string role = "Administrator")
     {
+        ArgumentNullException.ThrowIfNull(role);
+
         var client = CreateClient();
 
         using var scope = Services.CreateScope();
@@ -87,7 +89,7 @@ public sealed class CustomWebApplicationFactory
         var claims = new[]
         {
               new Claim(JwtRegisteredClaimNames.Sub,   Guid.NewGuid().ToString()),
-              new Claim(JwtRegisteredClaimNames.Email, $"test-{role.ToLower()}@test.com"),
+              new Claim(JwtRegisteredClaimNames.Email, $"test-{role.ToLowerInvariant()}@test.com"),
               new Claim(ClaimTypes.Role,               role),
               new Claim(JwtRegisteredClaimNames.Jti,   Guid.NewGuid().ToString()),
           };

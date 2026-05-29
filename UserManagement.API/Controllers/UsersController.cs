@@ -6,12 +6,13 @@ using UserManagement.Application.Users.DTOs;
 using UserManagement.Application.Users.Queries;
 
 namespace UserManagement.API.Controllers;
+
 [ApiController]
 [Route("api/users")]
 [Authorize]
 public sealed class UsersController : ControllerBase
 {
-    private readonly IMediator _mediator;   
+    private readonly IMediator _mediator;
     public UsersController(IMediator mediator) => _mediator = mediator;
 
     [HttpPost]
@@ -33,7 +34,10 @@ public sealed class UsersController : ControllerBase
 
     [HttpPut("{id:guid}")]
     public async Task<IActionResult> Update(Guid id, [FromBody] UpdateUserRequest request, CancellationToken ct)
-        => Ok(await _mediator.Send(new UpdateUserCommand(id, request.Name, request.Email), ct));
+    {
+        ArgumentNullException.ThrowIfNull(request);
+        return Ok(await _mediator.Send(new UpdateUserCommand(id, request.Name, request.Email), ct));
+    }
 
     [HttpDelete("{id:guid}")]
     [Authorize(Roles = "Administrator")]

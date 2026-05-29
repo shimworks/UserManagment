@@ -10,6 +10,9 @@ public static class DatabaseSeeder
 {
     public static async Task SeedAsync(AppDbContext context, IPasswordHasher hasher)
     {
+        ArgumentNullException.ThrowIfNull(context);
+        ArgumentNullException.ThrowIfNull(hasher);
+
         if (await context.Users.AnyAsync()) return;
 
         var email = Email.Create("admin@userms.com");

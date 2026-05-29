@@ -3,10 +3,11 @@ using UserManagement.Domain.Exceptions;
 
 namespace UserManagement.Domain.ValueObjects;
 
-public sealed class Email
+public sealed partial class Email
 {
-    private static readonly Regex _regex =
-        new(@"^[^@\s]+@[^@\s]+\.[^@\s]+$", RegexOptions.Compiled);
+    // SYSLIB1045: [GeneratedRegex] gera a implementação em compile-time — zero alocação em runtime
+    [GeneratedRegex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$", RegexOptions.Compiled)]
+    private static partial Regex EmailRegex();
 
     public string Value { get; }
 
@@ -16,7 +17,7 @@ public sealed class Email
     {
         if (string.IsNullOrWhiteSpace(value))
             throw new DomainException("Email is required.");
-        if (!_regex.IsMatch(value))
+        if (!EmailRegex().IsMatch(value))
             throw new DomainException($"'{value}' is not a valid email.");
         return new Email(value.ToLowerInvariant());
     }
